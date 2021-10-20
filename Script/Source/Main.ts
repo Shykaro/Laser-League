@@ -16,7 +16,7 @@ namespace Script {
 
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update); 
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60);  //60 Bilder pro sekunde, frachtet auf framerate time rum anstatt realtime ,start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
-    viewport.camera.mtxPivot.translateZ(-20); //ändert entfernung der Camera beim start des Spiels, ist hinzugefügt
+    viewport.camera.mtxPivot.translateZ(-25); //ändert entfernung der Camera beim start des Spiels, ist hinzugefügt
 
     let laser: ƒ.Node = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser2")[0];
 
@@ -45,7 +45,7 @@ namespace Script {
     let deltaTime: number = ƒ.Loop.timeFrameReal / 1000
 
     let speedAgentTranslation: number = 10; // meters per second
-    let speedAgentRotation: number = 360; // meters per second
+    //let speedAgentRotation: number = 360; // meters per second I DONT WANT TO ROTATE
 
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
       agent.mtxLocal.translateY(speedAgentTranslation * deltaTime)
@@ -55,11 +55,11 @@ namespace Script {
     }
 
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
-      agent.mtxLocal.rotateZ(-speedAgentRotation * deltaTime)
+      agent.mtxLocal.translateX(speedAgentTranslation * deltaTime) //falls rotationY, benutze speedAgentRotation
     }
 
     if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
-      agent.mtxLocal.rotateZ(speedAgentRotation * deltaTime)
+      agent.mtxLocal.translateX(-speedAgentTranslation * deltaTime) //falls rotationY, benutze speedAgentRotation
     }
   }
 }
