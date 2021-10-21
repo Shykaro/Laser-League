@@ -49,6 +49,7 @@ namespace Script {
 
   /*function collision(_event: Event): void {
     
+    let beam: ƒ.Node = ... Und das darunter kopieren.
     
     console.log(agentPos.translation); //Hopefully player position brauche player position, gleiche mit bounding box von laser ab, siehe onenote notizen.
 
