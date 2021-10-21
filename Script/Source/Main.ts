@@ -7,9 +7,12 @@ namespace Script {
 
   let transform: ƒ.Matrix4x4;
   let agent: ƒ.Node;
+  let agentPos: ƒ.Matrix3x3;
 
   function start(_event: CustomEvent): void {
     viewport = _event.detail;
+
+    //let deltaTime; //zuende copy-en
 
     let graph: ƒ.Node = viewport.getBranch();
     console.log("graph" + graph);
@@ -29,16 +32,28 @@ namespace Script {
   function update(_event: Event): void {
     
     movement(_event);
+    //collision(_event);
+
 
     //let speedAgentTranslation: number= 10; //meters per second
     //let speedAgentRotation: number = 360; //meters per second
     let speedLaserRotate: number = 360; //degrees per second, bestimmt die game geschwindigkeit oder eher gesagt die rotationsgeschwindigkeit
-    transform.rotateZ(speedLaserRotate * ƒ.Loop.timeFrameReal / 1000); //dazugehörige funktion
+    transform.rotateZ(speedLaserRotate * ƒ.Loop.timeFrameReal / 1000); //dazugehörige funktion gleich wieder ent-kommentieren
+
+
 
     // ƒ.Physics.world.simulate();  // if physics is included and used
     viewport.draw();
     ƒ.AudioManager.default.update();
   }
+
+  /*function collision(_event: Event): void {
+    
+    
+    console.log(agentPos.translation); //Hopefully player position
+
+  }*/
+
 
   function movement(_event: Event): void {
 

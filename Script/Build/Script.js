@@ -3,36 +3,33 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
-    let CustomComponentScript = /** @class */ (() => {
-        class CustomComponentScript extends ƒ.ComponentScript {
-            constructor() {
-                super();
-                // Properties may be mutated by users in the editor via the automatically created user interface
-                this.message = "CustomComponentScript added to ";
-                // Activate the functions of this component as response to events
-                this.hndEvent = (_event) => {
-                    switch (_event.type) {
-                        case "componentAdd" /* COMPONENT_ADD */:
-                            ƒ.Debug.log(this.message, this.node);
-                            break;
-                        case "componentRemove" /* COMPONENT_REMOVE */:
-                            this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-                            this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-                            break;
-                    }
-                };
-                // Don't start when running in editor
-                if (ƒ.Project.mode == ƒ.MODE.EDITOR)
-                    return;
-                // Listen to this component being added to or removed from a node
-                this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-                this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-            }
-        }
+    class CustomComponentScript extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
-        CustomComponentScript.iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
-        return CustomComponentScript;
-    })();
+        static iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        message = "CustomComponentScript added to ";
+        constructor() {
+            super();
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            // Listen to this component being added to or removed from a node
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+        }
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* COMPONENT_ADD */:
+                    ƒ.Debug.log(this.message, this.node);
+                    break;
+                case "componentRemove" /* COMPONENT_REMOVE */:
+                    this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+                    this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+                    break;
+            }
+        };
+    }
     Script.CustomComponentScript = CustomComponentScript;
 })(Script || (Script = {}));
 var Script;
@@ -43,8 +40,10 @@ var Script;
     document.addEventListener("interactiveViewportStarted", start);
     let transform;
     let agent;
+    let agentPos;
     function start(_event) {
         viewport = _event.detail;
+        //let deltaTime; //zuende copy-en
         let graph = viewport.getBranch();
         console.log("graph" + graph);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
@@ -56,14 +55,21 @@ var Script;
     }
     function update(_event) {
         movement(_event);
+        //collision(_event);
         //let speedAgentTranslation: number= 10; //meters per second
         //let speedAgentRotation: number = 360; //meters per second
         let speedLaserRotate = 360; //degrees per second, bestimmt die game geschwindigkeit oder eher gesagt die rotationsgeschwindigkeit
-        transform.rotateZ(speedLaserRotate * ƒ.Loop.timeFrameReal / 1000); //dazugehörige funktion
+        transform.rotateZ(speedLaserRotate * ƒ.Loop.timeFrameReal / 1000); //dazugehörige funktion gleich wieder ent-kommentieren
         // ƒ.Physics.world.simulate();  // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
     }
+    /*function collision(_event: Event): void {
+      
+      
+      console.log(agentPos.translation); //Hopefully player position
+  
+    }*/
     function movement(_event) {
         let deltaTime = ƒ.Loop.timeFrameReal / 1000;
         let speedAgentTranslation = 10; // meters per second
