@@ -67,7 +67,7 @@ var Script;
     /*function collision(_event: Event): void {
       
       
-      console.log(agentPos.translation); //Hopefully player position
+      console.log(agentPos.translation); //Hopefully player position brauche player position, gleiche mit bounding box von laser ab, siehe onenote notizen.
   
     }*/
     function movement(_event) {
