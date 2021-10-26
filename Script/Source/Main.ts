@@ -3,29 +3,36 @@ namespace Script {
   ƒ.Debug.info("Main Program Template running!");
 
   let viewport: ƒ.Viewport;
-  document.addEventListener("interactiveViewportStarted", <EventListener>start);
+  document.addEventListener("interactiveViewportStarted", <any>start);
 
   let transform: ƒ.Matrix4x4;
   let agent: ƒ.Node;
   let agentPos: ƒ.Matrix3x3;
 
-  function start(_event: CustomEvent): void {
+
+  async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
 
     //let deltaTime; //zuende copy-en
-
     let graph: ƒ.Node = viewport.getBranch();
     console.log("graph" + graph);
 
-    ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update); 
-    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60);  //60 Bilder pro sekunde, frachtet auf framerate time rum anstatt realtime ,start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
-    viewport.camera.mtxPivot.translateZ(-25); //ändert entfernung der Camera beim start des Spiels, ist hinzugefügt
-
     let laser: ƒ.Node = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser2")[0];
+
+    let graphLaser: ƒ.Graph = await ƒ.Project.registerAsGraph(laser, false);
+    let copy: ƒ.GraphInstance = new ƒ.GraphInstance(graphLaser);
 
     agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent1")[0];
 
     transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
+
+    graph.getChildrenByName("Lasers")[0].addChild(copy);
+    copy.addComponent(new ƒ.ComponentTransform);
+    copy.mtxLocal.translateX(5)
+
+    ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update); 
+    ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60);  //60 Bilder pro sekunde, frachtet auf framerate time rum anstatt realtime ,start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+    viewport.camera.mtxPivot.translateZ(-25); //ändert entfernung der Camera beim start des Spiels, ist hinzugefügt
 
   }
 
