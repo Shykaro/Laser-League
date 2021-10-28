@@ -66,16 +66,8 @@ var Script;
         }
         graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
         copyLaser.mtxLocal.translation = ƒ.Vector3.X(10);
-        let graphLaser = await ƒ.Project.registerAsGraph(laser, false);
-        let copy = new ƒ.GraphInstance(graphLaser);
         agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent1")[0];
         transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
-        graph.getChildrenByName("Lasers")[0].addChild(copy);
-        copy.addComponent(new ƒ.ComponentTransform);
-        copy.mtxLocal.translateX(5);
-        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
-        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60); //60 Bilder pro sekunde, frachtet auf framerate time rum anstatt realtime ,start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
-        viewport.camera.mtxPivot.translateZ(-25); //ändert entfernung der Camera beim start des Spiels, ist hinzugefügt
     }
     //public hndEvent = (_event: Event){ ->
     //switch(_event.type){
@@ -84,11 +76,12 @@ var Script;
     //PLS FILL }
     function update(_event) {
         movement(_event);
-        Collision(); //MAKE IT WORK, UNTEN.
+        //Collision(); //MAKE IT WORK, UNTEN.
         //let speedAgentTranslation: number= 10; //meters per second
         //let speedAgentRotation: number = 360; //meters per second
-        let speedLaserRotate = 360; //degrees per second, bestimmt die game geschwindigkeit oder eher gesagt die rotationsgeschwindigkeit
-        this.transform.rotateZ(speedLaserRotate * ƒ.Loop.timeFrameReal / 1000); //dazugehörige funktion gleich wieder ent-kommentieren
+        //let speedLaserRotate: number = 360; //degrees per second, bestimmt die game geschwindigkeit oder eher gesagt die rotationsgeschwindigkeit
+        //this.transform.rotateZ(speedLaserRotate * ƒ.Loop.timeFrameReal / 1000); //dazugehörige funktion gleich wieder ent-kommentieren
+        let deltaTime = ƒ.Loop.timeFrameReal / 1000; // USE THIS FOR TIME
         // ƒ.Physics.world.simulate();  // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
