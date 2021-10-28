@@ -48,7 +48,22 @@
                 "ƒ.Node": {
                   "name": "Laser1",
                   "components": {},
-                  "children": []
+                  "children": [
+                    {
+                      "ƒ.Node": {
+                        "name": "Center",
+                        "components": {},
+                        "children": []
+                      }
+                    },
+                    {
+                      "ƒ.Node": {
+                        "name": "Arms",
+                        "components": {},
+                        "children": []
+                      }
+                    }
+                  ]
                 }
               },
               {

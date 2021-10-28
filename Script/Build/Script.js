@@ -39,27 +39,48 @@ var Script;
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
     let transform;
+    let laser;
     let agent;
     let agentPos;
-    function start(_event) {
+    let beamWidth = 0.7;
+    let agentRadius = 0.5;
+    let beamHeight = 6;
+    let copyLaser;
+    async function start(_event) {
         viewport = _event.detail;
         //let deltaTime; //zuende copy-en
         let graph = viewport.getBranch();
         console.log("graph" + graph);
+        laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser2")[0];
+        let laserArray;
+        let graphLaser = await ƒ.Project.registerAsGraph(laser, false);
+        copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60); //60 Bilder pro sekunde, frachtet auf framerate time rum anstatt realtime ,start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
         viewport.camera.mtxPivot.translateZ(-25); //ändert entfernung der Camera beim start des Spiels, ist hinzugefügt
-        let laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser2")[0];
+        let countLaser = graph.getChildrenByName("Lasers")[0].getChildren().length;
+        console.log(countLaser);
+        laserArray = new Array(countLaser);
+        for (let i = 0; i < countLaser; i++) {
+            laserArray[i] = graph.getChildrenByName("Lasers")[0].getChildren()[i].getChildrenByName("Center")[0].mtxLocal;
+        }
+        graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
+        copyLaser.mtxLocal.translation = ƒ.Vector3.X(10);
         agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent1")[0];
         transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
     }
+    //public hndEvent = (_event: Event){ ->
+    //switch(_event.type){
+    //  case ƒ.EVENT.COMPONENT()
+    //}
+    //PLS FILL }
     function update(_event) {
         movement(_event);
-        //collision(_event);
+        Collision(); //MAKE IT WORK, UNTEN.
         //let speedAgentTranslation: number= 10; //meters per second
         //let speedAgentRotation: number = 360; //meters per second
         let speedLaserRotate = 360; //degrees per second, bestimmt die game geschwindigkeit oder eher gesagt die rotationsgeschwindigkeit
-        transform.rotateZ(speedLaserRotate * ƒ.Loop.timeFrameReal / 1000); //dazugehörige funktion gleich wieder ent-kommentieren
+        this.transform.rotateZ(speedLaserRotate * ƒ.Loop.timeFrameReal / 1000); //dazugehörige funktion gleich wieder ent-kommentieren
         // ƒ.Physics.world.simulate();  // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
@@ -74,7 +95,7 @@ var Script;
     function movement(_event) {
         let deltaTime = ƒ.Loop.timeFrameReal / 1000;
         let speedAgentTranslation = 10; // meters per second
-        //let speedAgentRotation: number = 360; // meters per second I DONT WANT TO ROTATE
+        let speedAgentRotation = 360; // meters per second //I DONT WANT TO ROTATE
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.W, ƒ.KEYBOARD_CODE.ARROW_UP])) {
             agent.mtxLocal.translateY(speedAgentTranslation * deltaTime);
         }
@@ -82,11 +103,24 @@ var Script;
             agent.mtxLocal.translateY(-speedAgentTranslation * deltaTime);
         }
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.D, ƒ.KEYBOARD_CODE.ARROW_RIGHT])) {
-            agent.mtxLocal.translateX(speedAgentTranslation * deltaTime); //falls rotationY, benutze speedAgentRotation
+            agent.mtxLocal.rotateZ(-speedAgentRotation * deltaTime); //falls rotateY, benutze speedAgentRotation
         }
         if (ƒ.Keyboard.isPressedOne([ƒ.KEYBOARD_CODE.A, ƒ.KEYBOARD_CODE.ARROW_LEFT])) {
-            agent.mtxLocal.translateX(-speedAgentTranslation * deltaTime); //falls rotationY, benutze speedAgentRotation
+            agent.mtxLocal.rotateZ(speedAgentRotation * deltaTime); //falls rotateY, benutze speedAgentRotation, falls Translate, benutze agent translation
         }
+    }
+    function Collision() {
+        laser.getChildren()[0].getChildren().forEach(element => {
+            let beam = element;
+            let posLocal = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beam.mtxWorldInverse, true);
+            //console.log(posLocal.toString()+ beam.name);
+            if (posLocal.x < (-beamWidth / 2 - agentRadius) || posLocal.x > (beamWidth / 2 + agentRadius) || posLocal.y < (agentRadius) || posLocal.y > (beamHeight + agentRadius)) {
+                //console.log("not intersecting");
+            }
+            else {
+                console.log("intersecting");
+            }
+        });
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
