@@ -66,8 +66,16 @@ var Script;
         }
         graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
         copyLaser.mtxLocal.translation = ƒ.Vector3.X(10);
+        let graphLaser = await ƒ.Project.registerAsGraph(laser, false);
+        let copy = new ƒ.GraphInstance(graphLaser);
         agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent1")[0];
         transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
+        graph.getChildrenByName("Lasers")[0].addChild(copy);
+        copy.addComponent(new ƒ.ComponentTransform);
+        copy.mtxLocal.translateX(5);
+        ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
+        ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60); //60 Bilder pro sekunde, frachtet auf framerate time rum anstatt realtime ,start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
+        viewport.camera.mtxPivot.translateZ(-25); //ändert entfernung der Camera beim start des Spiels, ist hinzugefügt
     }
     //public hndEvent = (_event: Event){ ->
     //switch(_event.type){
