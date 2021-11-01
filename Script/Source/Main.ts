@@ -32,8 +32,8 @@ namespace Script {
     viewport.camera.mtxPivot.translateZ(-25); //ändert entfernung der Camera beim start des Spiels, ist hinzugefügt
 
 
-    graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
-    copyLaser.mtxLocal.translation = ƒ.Vector3.X(10);
+    //graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
+    //copyLaser.mtxLocal.translation = ƒ.Vector3.X(10);
 
 
     agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent1")[0];
