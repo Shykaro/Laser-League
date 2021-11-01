@@ -237,7 +237,8 @@
           {
             "Script.LaserCustomComponentScript": {
               "active": true,
-              "message": "LasertCustomComponentScrip added to "
+              "message": "LasertCustomComponentScrip added to ",
+              "speedLaserRotate": 360
             }
           }
         ]
