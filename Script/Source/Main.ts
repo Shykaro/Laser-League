@@ -5,7 +5,6 @@ namespace Script {
   let viewport: ƒ.Viewport;
   document.addEventListener("interactiveViewportStarted", <any>start);
 
-  let transform: ƒ.Matrix4x4;
   let laser: ƒ.Node;
   let agent: ƒ.Node;
   let agentPos: ƒ.Matrix3x3;
@@ -24,7 +23,7 @@ namespace Script {
     
     addLaser(_event, graph);
     
-    laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
+    laser = graph.getChildrenByName("Lasers")[0];
 
     
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update); 
@@ -38,14 +37,14 @@ namespace Script {
 
     agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent1")[0];
 
-    transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
 
   }
 
   function update(_event: Event): void {
     
     movement(_event);
-    //Collision(); //MAKE IT WORK, UNTEN.
+    Collision(); //MAKE IT WORK, UNTEN.
+    
 
     //let speedAgentTranslation: number= 10; //meters per second
     //let speedAgentRotation: number = 360; //meters per second
@@ -70,13 +69,13 @@ namespace Script {
   async function addLaser(_event: Event, _graph: ƒ.Node) {
     let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-11-01T17:49:49.114Z|30477"]; // get the laser-ressource
 
-    let startPos: ƒ.Vector2 = new ƒ.Vector2(-15, -8);
+    let startPos: ƒ.Vector2 = new ƒ.Vector2(-8, -4);
 
     for (let i = 0; i < 2; i++) {
       for (let j = 0; j < countLaserblocks / 2; j++) {
         copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
 
-        copyLaser.mtxLocal.translation = new ƒ.Vector3(startPos.x + j * 15, startPos.y + i * 16, 0);
+        copyLaser.mtxLocal.translation = new ƒ.Vector3(startPos.x + j * 15, startPos.y + i * 8, 0);
 
         _graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
 
@@ -115,18 +114,31 @@ namespace Script {
 
   function Collision(): void {
 
-    laser.getChildren()[0].getChildren().forEach(element => {
-      let beam: ƒ.Node = element;
-      let posLocal: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beam.mtxWorldInverse, true);
-      //console.log(posLocal.toString()+ beam.name);
+    for (let i = 0; i < laser.getChildren().length; i++) {
 
-      if (posLocal.x < (- beamWidth / 2 - agentRadius) || posLocal.x > (beamWidth / 2 + agentRadius) || posLocal.y < (agentRadius) || posLocal.y > (beamHeight + agentRadius)) {
-        //console.log("not intersecting");
-      } else {
-        console.log("intersecting");
-      }
+      laser.getChildren()[i].getChildrenByName("Arms")[0].getChildren().forEach(element => {
+        let beam: ƒ.Node = element;
+        let posLocal: ƒ.Vector3 = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beam.mtxWorldInverse, true);
+        
+        /* let minX = beam.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + agent.radius;
+        let minY = beam.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + agent.radius;
+        //console.log(posLocal.toString()+ beam.name);
 
-    });
-  } 
 
+        if (posLocal.x <= (minX) && posLocal.x >= -(minX) && posLocal.y <= minY && posLocal.y >= 0) {
+          agent.getComponent(agentComponentScript).respwan;
+        }
+ */
+        if (posLocal.x < (- beamWidth / 2 - agentRadius) || posLocal.x > (beamWidth / 2 + agentRadius) || posLocal.y < (agentRadius) || posLocal.y > (beamHeight + agentRadius)) {
+          //console.log("not intersecting");
+        } else {
+          console.log("intersecting");
+        }
+        
+
+      });
+    }
+
+
+  }
 }

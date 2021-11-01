@@ -83,7 +83,6 @@ var Script;
     ƒ.Debug.info("Main Program Template running!");
     let viewport;
     document.addEventListener("interactiveViewportStarted", start);
-    let transform;
     let laser;
     let agent;
     let agentPos;
@@ -98,18 +97,17 @@ var Script;
         let graph = viewport.getBranch();
         console.log("graph" + graph);
         addLaser(_event, graph);
-        laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
+        laser = graph.getChildrenByName("Lasers")[0];
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60); //60 Bilder pro sekunde, frachtet auf framerate time rum anstatt realtime ,start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
         viewport.camera.mtxPivot.translateZ(-25); //ändert entfernung der Camera beim start des Spiels, ist hinzugefügt
         //graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
         //copyLaser.mtxLocal.translation = ƒ.Vector3.X(10);
         agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent1")[0];
-        transform = laser.getComponent(ƒ.ComponentTransform).mtxLocal;
     }
     function update(_event) {
         movement(_event);
-        //Collision(); //MAKE IT WORK, UNTEN.
+        Collision(); //MAKE IT WORK, UNTEN.
         //let speedAgentTranslation: number= 10; //meters per second
         //let speedAgentRotation: number = 360; //meters per second
         //let speedLaserRotate: number = 360; //degrees per second, bestimmt die game geschwindigkeit oder eher gesagt die rotationsgeschwindigkeit
@@ -127,11 +125,11 @@ var Script;
     }*/
     async function addLaser(_event, _graph) {
         let graphLaser = FudgeCore.Project.resources["Graph|2021-11-01T17:49:49.114Z|30477"]; // get the laser-ressource
-        let startPos = new ƒ.Vector2(-15, -8);
+        let startPos = new ƒ.Vector2(-8, -4);
         for (let i = 0; i < 2; i++) {
             for (let j = 0; j < countLaserblocks / 2; j++) {
                 copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
-                copyLaser.mtxLocal.translation = new ƒ.Vector3(startPos.x + j * 15, startPos.y + i * 16, 0);
+                copyLaser.mtxLocal.translation = new ƒ.Vector3(startPos.x + j * 15, startPos.y + i * 8, 0);
                 _graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
                 copyLaser.getComponent(Script.LaserCustomComponentScript).speedLaserRotate = ƒ.random.getRange(90, 150);
                 if (i > 0) {
@@ -158,17 +156,27 @@ var Script;
         }
     }
     function Collision() {
-        laser.getChildren()[0].getChildren().forEach(element => {
-            let beam = element;
-            let posLocal = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beam.mtxWorldInverse, true);
-            //console.log(posLocal.toString()+ beam.name);
-            if (posLocal.x < (-beamWidth / 2 - agentRadius) || posLocal.x > (beamWidth / 2 + agentRadius) || posLocal.y < (agentRadius) || posLocal.y > (beamHeight + agentRadius)) {
-                //console.log("not intersecting");
-            }
-            else {
-                console.log("intersecting");
-            }
-        });
+        for (let i = 0; i < laser.getChildren().length; i++) {
+            laser.getChildren()[i].getChildrenByName("Arms")[0].getChildren().forEach(element => {
+                let beam = element;
+                let posLocal = ƒ.Vector3.TRANSFORMATION(agent.mtxWorld.translation, beam.mtxWorldInverse, true);
+                /* let minX = beam.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.x / 2 + agent.radius;
+                let minY = beam.getComponent(ƒ.ComponentMesh).mtxPivot.scaling.y + agent.radius;
+                //console.log(posLocal.toString()+ beam.name);
+        
+        
+                if (posLocal.x <= (minX) && posLocal.x >= -(minX) && posLocal.y <= minY && posLocal.y >= 0) {
+                  agent.getComponent(agentComponentScript).respwan;
+                }
+         */
+                if (posLocal.x < (-beamWidth / 2 - agentRadius) || posLocal.x > (beamWidth / 2 + agentRadius) || posLocal.y < (agentRadius) || posLocal.y > (beamHeight + agentRadius)) {
+                    //console.log("not intersecting");
+                }
+                else {
+                    console.log("intersecting");
+                }
+            });
+        }
     }
 })(Script || (Script = {}));
 //# sourceMappingURL=Script.js.map
