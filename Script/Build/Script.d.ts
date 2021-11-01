@@ -8,4 +8,15 @@ declare namespace Script {
     }
 }
 declare namespace Script {
+    import ƒ = FudgeCore;
+    class LaserCustomComponentScript extends ƒ.ComponentScript {
+        static readonly iSubclass: number;
+        message: string;
+        speedLaserRotate: number;
+        constructor();
+        hndEvent: (_event: Event) => void;
+        update: () => void;
+    }
+}
+declare namespace Script {
 }

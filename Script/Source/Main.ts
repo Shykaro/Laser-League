@@ -13,6 +13,7 @@ namespace Script {
   let agentRadius: number = 0.5;
   let beamHeight: number = 6;
   let copyLaser: ƒ.GraphInstance;
+  let countLaserblocks: number = 4; //anzahl der verschiedenen Laser
 
   async function start(_event: CustomEvent): Promise<void> {
     viewport = _event.detail;
@@ -21,26 +22,15 @@ namespace Script {
     let graph: ƒ.Node = viewport.getBranch();
     console.log("graph" + graph);
     
+    addLaser(_event, graph);
     
-    laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser2")[0];
-    let laserArray: ƒ.Matrix4x4[];
-    
-
-    let graphLaser: ƒ.Graph = await ƒ.Project.registerAsGraph(laser, false);
-    copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
+    laser = graph.getChildrenByName("Lasers")[0].getChildrenByName("Laser")[0];
 
     
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update); 
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60);  //60 Bilder pro sekunde, frachtet auf framerate time rum anstatt realtime ,start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
     viewport.camera.mtxPivot.translateZ(-25); //ändert entfernung der Camera beim start des Spiels, ist hinzugefügt
 
-    
-    let countLaser: number = graph.getChildrenByName("Lasers")[0].getChildren().length;
-    console.log(countLaser);
-    laserArray = new Array(countLaser);
-    for (let i = 0; i < countLaser; i++) {
-      laserArray[i] = graph.getChildrenByName("Lasers")[0].getChildren()[i].getChildrenByName("Center")[0].mtxLocal;
-    }
 
     graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
     copyLaser.mtxLocal.translation = ƒ.Vector3.X(10);
@@ -52,12 +42,6 @@ namespace Script {
 
   }
 
-  //public hndEvent = (_event: Event){ ->
-  //switch(_event.type){
-  //  case ƒ.EVENT.COMPONENT()
-  //}
-  //PLS FILL }
-
   function update(_event: Event): void {
     
     movement(_event);
@@ -68,7 +52,7 @@ namespace Script {
     //let speedLaserRotate: number = 360; //degrees per second, bestimmt die game geschwindigkeit oder eher gesagt die rotationsgeschwindigkeit
     //this.transform.rotateZ(speedLaserRotate * ƒ.Loop.timeFrameReal / 1000); //dazugehörige funktion gleich wieder ent-kommentieren
 
-    let deltaTime: number = ƒ.Loop.timeFrameReal / 1000; // USE THIS FOR TIME
+    
 
     // ƒ.Physics.world.simulate();  // if physics is included and used
     viewport.draw();
@@ -83,6 +67,28 @@ namespace Script {
 
   }*/
 
+  async function addLaser(_event: Event, _graph: ƒ.Node) {
+    let graphLaser: ƒ.Graph = <ƒ.Graph>FudgeCore.Project.resources["Graph|2021-11-01T17:49:49.114Z|30477"]; // get the laser-ressource
+
+    let startPos: ƒ.Vector2 = new ƒ.Vector2(-15, -8);
+
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < countLaserblocks / 2; j++) {
+        copyLaser = await ƒ.Project.createGraphInstance(graphLaser);
+
+        copyLaser.mtxLocal.translation = new ƒ.Vector3(startPos.x + j * 15, startPos.y + i * 16, 0);
+
+        _graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
+
+        copyLaser.getComponent(LaserCustomComponentScript).speedLaserRotate = ƒ.random.getRange(90, 150);
+
+        if (i > 0) {
+          copyLaser.getComponent(LaserCustomComponentScript).speedLaserRotate *= -1;
+        }
+
+      }
+    }
+  }
 
   function movement(_event: Event): void {
 
