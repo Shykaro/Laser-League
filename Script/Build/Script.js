@@ -2,6 +2,22 @@
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
+    class Agent extends ƒ.Node {
+        constructor() {
+            super("Agent");
+            this.addComponent(new ƒ.ComponentTransform);
+            this.addComponent(new ƒ.ComponentMesh(new ƒ.MeshQuad("MeshAgent")));
+            this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("mtrAgent", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(1, 0, 1, 1)))));
+            this.mtxLocal.scale(ƒ.Vector3.ONE(0.5));
+            //this.mtxLocal.translateZ(0.5); Unneccesary
+            //this.activate(true);
+        }
+    }
+    Script.Agent = Agent;
+})(Script || (Script = {}));
+var Script;
+(function (Script) {
+    var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
     let CustomComponentScript = /** @class */ (() => {
         class CustomComponentScript extends ƒ.ComponentScript {
@@ -60,8 +76,8 @@ var Script;
                     }
                 };
                 this.update = () => {
-                    let deltaTime = ƒ.Loop.timeFrameReal / 1000; // USE THIS FOR TIME
-                    this.node.mtxLocal.rotateZ(this.speedLaserRotate * deltaTime); //dazugehörige funktion gleich wieder ent-kommentieren
+                    //let deltaTime: number = ƒ.Loop.timeFrameReal / 1000; // USE THIS FOR TIME
+                    //this.node.mtxLocal.rotateZ(this.speedLaserRotate * deltaTime); //dazugehörige funktion gleich wieder ent-kommentieren
                 };
                 // Don't start when running in editor
                 if (ƒ.Project.mode == ƒ.MODE.EDITOR)
@@ -98,12 +114,15 @@ var Script;
         console.log("graph" + graph);
         addLaser(_event, graph);
         laser = graph.getChildrenByName("Lasers")[0];
+        //laser.mtxLocal.translateX(5); //remove, wurde am 02.11 hinzugefügt?
         ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, update);
         ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60); //60 Bilder pro sekunde, frachtet auf framerate time rum anstatt realtime ,start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
         viewport.camera.mtxPivot.translateZ(-25); //ändert entfernung der Camera beim start des Spiels, ist hinzugefügt
         //graph.getChildrenByName("Lasers")[0].addChild(copyLaser);
         //copyLaser.mtxLocal.translation = ƒ.Vector3.X(10);
-        agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent1")[0];
+        //agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent1")[0];
+        agent = new Script.Agent; //ersetzt das normale let agent: ƒ.Node;
+        graph.getChildrenByName("Agents")[0].addChild(agent);
     }
     function update(_event) {
         movement(_event);
@@ -169,7 +188,7 @@ var Script;
                   agent.getComponent(agentComponentScript).respwan;
                 }
          */
-                if (posLocal.x < (-beamWidth / 2 - agentRadius) || posLocal.x > (beamWidth / 2 + agentRadius) || posLocal.y < (agentRadius) || posLocal.y > (beamHeight + agentRadius)) {
+                if (posLocal.x < (-agentRadius) || posLocal.x > (beamWidth + agentRadius) || posLocal.y < (beamHeight / 2 - agentRadius) || posLocal.y > (beamHeight / 2 + agentRadius)) {
                     //console.log("not intersecting");
                 }
                 else {

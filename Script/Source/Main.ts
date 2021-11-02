@@ -6,7 +6,7 @@ namespace Script {
   document.addEventListener("interactiveViewportStarted", <any>start);
 
   let laser: ƒ.Node;
-  let agent: ƒ.Node;
+  let agent: Agent;
   let agentPos: ƒ.Matrix3x3;
   let beamWidth: number = 0.7;
   let agentRadius: number = 0.5;
@@ -25,6 +25,8 @@ namespace Script {
     
     laser = graph.getChildrenByName("Lasers")[0];
 
+    //laser.mtxLocal.translateX(5); //remove, wurde am 02.11 hinzugefügt?
+
     
     ƒ.Loop.addEventListener(ƒ.EVENT.LOOP_FRAME, update); 
     ƒ.Loop.start(ƒ.LOOP_MODE.TIME_REAL, 60);  //60 Bilder pro sekunde, frachtet auf framerate time rum anstatt realtime ,start the game loop to continously draw the viewport, update the audiosystem and drive the physics i/a
@@ -35,8 +37,9 @@ namespace Script {
     //copyLaser.mtxLocal.translation = ƒ.Vector3.X(10);
 
 
-    agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent1")[0];
-
+    //agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent1")[0];
+    agent = new Agent; //ersetzt das normale let agent: ƒ.Node;
+    graph.getChildrenByName("Agents")[0].addChild(agent);
 
   }
 
@@ -129,7 +132,7 @@ namespace Script {
           agent.getComponent(agentComponentScript).respwan;
         }
  */
-        if (posLocal.x < (- beamWidth / 2 - agentRadius) || posLocal.x > (beamWidth / 2 + agentRadius) || posLocal.y < (agentRadius) || posLocal.y > (beamHeight + agentRadius)) {
+        if (posLocal.x < (- agentRadius) || posLocal.x > (beamWidth + agentRadius) || posLocal.y < (beamHeight / 2 - agentRadius) || posLocal.y > (beamHeight / 2 + agentRadius)) {
           //console.log("not intersecting");
         } else {
           console.log("intersecting");

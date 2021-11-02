@@ -1,5 +1,11 @@
 declare namespace Script {
     import ƒ = FudgeCore;
+    class Agent extends ƒ.Node {
+        constructor();
+    }
+}
+declare namespace Script {
+    import ƒ = FudgeCore;
     class CustomComponentScript extends ƒ.ComponentScript {
         static readonly iSubclass: number;
         message: string;

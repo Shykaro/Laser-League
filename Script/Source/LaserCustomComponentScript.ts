@@ -38,8 +38,8 @@ namespace Script {
 
     public update = () => {
 
-      let deltaTime: number = ƒ.Loop.timeFrameReal / 1000; // USE THIS FOR TIME
-      this.node.mtxLocal.rotateZ(this.speedLaserRotate * deltaTime); //dazugehörige funktion gleich wieder ent-kommentieren
+      //let deltaTime: number = ƒ.Loop.timeFrameReal / 1000; // USE THIS FOR TIME
+      //this.node.mtxLocal.rotateZ(this.speedLaserRotate * deltaTime); //dazugehörige funktion gleich wieder ent-kommentieren
 
     }
 
