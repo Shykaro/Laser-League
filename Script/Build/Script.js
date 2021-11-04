@@ -5,6 +5,8 @@ var Script;
     class Agent extends ƒ.Node {
         constructor() {
             super("Agent");
+            this.health = 1;
+            this.name = "Agent 47";
             this.addComponent(new ƒ.ComponentTransform);
             this.addComponent(new ƒ.ComponentMesh(new ƒ.MeshQuad("MeshAgent")));
             this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("mtrAgent", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(1, 0, 1, 1)))));
@@ -123,6 +125,8 @@ var Script;
         //agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent1")[0];
         agent = new Script.Agent; //ersetzt das normale let agent: ƒ.Node;
         graph.getChildrenByName("Agents")[0].addChild(agent);
+        let domName = document.querySelector("#Hud>h1");
+        domName.textContent = agent.name;
     }
     function update(_event) {
         movement(_event);
@@ -134,6 +138,10 @@ var Script;
         // ƒ.Physics.world.simulate();  // if physics is included and used
         viewport.draw();
         ƒ.AudioManager.default.update();
+        //Healthbar for Agent -------------
+        //agent.health
+        let domHealth = document.querySelector("input");
+        domHealth.value = agent.health.toString();
     }
     /*function collision(_event: Event): void {
       

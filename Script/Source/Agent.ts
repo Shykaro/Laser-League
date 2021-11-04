@@ -2,6 +2,10 @@ namespace Script {
     import ƒ = FudgeCore;
 
     export class Agent extends ƒ.Node{
+
+        public health: number = 1;
+        public name: string = "Agent 47";
+
         constructor() {
             super("Agent");
             this.addComponent(new ƒ.ComponentTransform);

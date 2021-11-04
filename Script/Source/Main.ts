@@ -40,6 +40,8 @@ namespace Script {
     //agent = graph.getChildrenByName("Agents")[0].getChildrenByName("Agent1")[0];
     agent = new Agent; //ersetzt das normale let agent: ƒ.Node;
     graph.getChildrenByName("Agents")[0].addChild(agent);
+    let domName: HTMLElement = document.querySelector("#Hud>h1");
+    domName.textContent = agent.name;
 
   }
 
@@ -59,6 +61,13 @@ namespace Script {
     // ƒ.Physics.world.simulate();  // if physics is included and used
     viewport.draw();
     ƒ.AudioManager.default.update();
+
+
+    //Healthbar for Agent -------------
+    //agent.health
+    let domHealth: HTMLInputElement = document.querySelector("input");
+    domHealth.value = agent.health.toString();
+
   }
 
   /*function collision(_event: Event): void {
