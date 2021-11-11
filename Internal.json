@@ -126,7 +126,26 @@
         {
           "ƒ.Node": {
             "name": "Arena",
-            "components": {},
+            "components": {
+              "ComponentAudio": [
+                {
+                  "ƒ.ComponentAudio": {
+                    "active": true,
+                    "idResource": "Audio|2021-11-11T14:43:36.033Z|75975",
+                    "playing": true,
+                    "loop": true,
+                    "volume": 0.2999999523162842
+                  }
+                }
+              ],
+              "ComponentAudioListener": [
+                {
+                  "ƒ.ComponentAudioListener": {
+                    "active": true
+                  }
+                }
+              ]
+            },
             "children": [
               {
                 "ƒ.Node": {
@@ -378,6 +397,14 @@
       ],
       "idResource": "Graph|2021-11-01T17:49:49.114Z|30477",
       "type": "Graph"
+    }
+  },
+  "Audio|2021-11-11T14:43:36.033Z|75975": {
+    "ƒ.Audio": {
+      "url": "Sound\\trancyvania.mp3",
+      "idResource": "Audio|2021-11-11T14:43:36.033Z|75975",
+      "name": "Sound\\trancyvania.mp3",
+      "type": "Audio"
     }
   }
 }

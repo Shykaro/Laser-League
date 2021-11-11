@@ -3,10 +3,10 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     class Agent extends ƒ.Node {
+        health = 1;
+        name = "Agent 47";
         constructor() {
             super("Agent");
-            this.health = 1;
-            this.name = "Agent 47";
             this.addComponent(new ƒ.ComponentTransform);
             this.addComponent(new ƒ.ComponentMesh(new ƒ.MeshQuad("MeshAgent")));
             this.addComponent(new ƒ.ComponentMaterial(new ƒ.Material("mtrAgent", ƒ.ShaderUniColor, new ƒ.CoatColored(new ƒ.Color(1, 0, 1, 1)))));
@@ -21,78 +21,72 @@ var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
-    let CustomComponentScript = /** @class */ (() => {
-        class CustomComponentScript extends ƒ.ComponentScript {
-            constructor() {
-                super();
-                // Properties may be mutated by users in the editor via the automatically created user interface
-                this.message = "CustomComponentScript added to ";
-                // Activate the functions of this component as response to events
-                this.hndEvent = (_event) => {
-                    switch (_event.type) {
-                        case "componentAdd" /* COMPONENT_ADD */:
-                            ƒ.Debug.log(this.message, this.node);
-                            break;
-                        case "componentRemove" /* COMPONENT_REMOVE */:
-                            this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-                            this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-                            break;
-                    }
-                };
-                // Don't start when running in editor
-                if (ƒ.Project.mode == ƒ.MODE.EDITOR)
-                    return;
-                // Listen to this component being added to or removed from a node
-                this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-                this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-            }
-        }
+    class CustomComponentScript extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
-        CustomComponentScript.iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
-        return CustomComponentScript;
-    })();
+        static iSubclass = ƒ.Component.registerSubclass(CustomComponentScript);
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        message = "CustomComponentScript added to ";
+        constructor() {
+            super();
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            // Listen to this component being added to or removed from a node
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+        }
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* COMPONENT_ADD */:
+                    ƒ.Debug.log(this.message, this.node);
+                    break;
+                case "componentRemove" /* COMPONENT_REMOVE */:
+                    this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+                    this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+                    break;
+            }
+        };
+    }
     Script.CustomComponentScript = CustomComponentScript;
 })(Script || (Script = {}));
 var Script;
 (function (Script) {
     var ƒ = FudgeCore;
     ƒ.Project.registerScriptNamespace(Script); // Register the namespace to FUDGE for serialization
-    let LaserCustomComponentScript = /** @class */ (() => {
-        class LaserCustomComponentScript extends ƒ.ComponentScript {
-            constructor() {
-                super();
-                // Properties may be mutated by users in the editor via the automatically created user interface
-                this.message = "LasertCustomComponentScrip added to ";
-                this.speedLaserRotate = 360; //degrees per second, bestimmt die game geschwindigkeit oder eher gesagt die rotationsgeschwindigkeit
-                // Activate the functions of this component as response to events
-                this.hndEvent = (_event) => {
-                    switch (_event.type) {
-                        case "componentAdd" /* COMPONENT_ADD */:
-                            ƒ.Debug.log(this.message, this.node);
-                            ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
-                            break;
-                        case "componentRemove" /* COMPONENT_REMOVE */:
-                            this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-                            this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-                            break;
-                    }
-                };
-                this.update = () => {
-                    //let deltaTime: number = ƒ.Loop.timeFrameReal / 1000; // USE THIS FOR TIME
-                    //this.node.mtxLocal.rotateZ(this.speedLaserRotate * deltaTime); //dazugehörige funktion gleich wieder ent-kommentieren
-                };
-                // Don't start when running in editor
-                if (ƒ.Project.mode == ƒ.MODE.EDITOR)
-                    return;
-                // Listen to this component being added to or removed from a node
-                this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
-                this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
-            }
-        }
+    class LaserCustomComponentScript extends ƒ.ComponentScript {
         // Register the script as component for use in the editor via drag&drop
-        LaserCustomComponentScript.iSubclass = ƒ.Component.registerSubclass(LaserCustomComponentScript);
-        return LaserCustomComponentScript;
-    })();
+        static iSubclass = ƒ.Component.registerSubclass(LaserCustomComponentScript);
+        // Properties may be mutated by users in the editor via the automatically created user interface
+        message = "LasertCustomComponentScrip added to ";
+        speedLaserRotate = 360; //degrees per second, bestimmt die game geschwindigkeit oder eher gesagt die rotationsgeschwindigkeit
+        constructor() {
+            super();
+            // Don't start when running in editor
+            if (ƒ.Project.mode == ƒ.MODE.EDITOR)
+                return;
+            // Listen to this component being added to or removed from a node
+            this.addEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+            this.addEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+        }
+        // Activate the functions of this component as response to events
+        hndEvent = (_event) => {
+            switch (_event.type) {
+                case "componentAdd" /* COMPONENT_ADD */:
+                    ƒ.Debug.log(this.message, this.node);
+                    ƒ.Loop.addEventListener("loopFrame" /* LOOP_FRAME */, this.update);
+                    break;
+                case "componentRemove" /* COMPONENT_REMOVE */:
+                    this.removeEventListener("componentAdd" /* COMPONENT_ADD */, this.hndEvent);
+                    this.removeEventListener("componentRemove" /* COMPONENT_REMOVE */, this.hndEvent);
+                    break;
+            }
+        };
+        update = () => {
+            //let deltaTime: number = ƒ.Loop.timeFrameReal / 1000; // USE THIS FOR TIME
+            //this.node.mtxLocal.rotateZ(this.speedLaserRotate * deltaTime); //dazugehörige funktion gleich wieder ent-kommentieren
+        };
+    }
     Script.LaserCustomComponentScript = LaserCustomComponentScript;
 })(Script || (Script = {}));
 var Script;
