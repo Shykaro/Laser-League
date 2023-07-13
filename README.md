@@ -1,2 +1,4 @@
-# Laser League (Abandoned)
- Spielcopy
+# Laser League
+Status: (Abandoned) 
+
+Spielcopy
